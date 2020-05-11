@@ -7,6 +7,7 @@
         Pass {
 
             Tags {"LightMode"="ForwardBase"}
+            Cull Off
 
             CGPROGRAM
 

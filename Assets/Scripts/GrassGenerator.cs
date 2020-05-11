@@ -12,77 +12,14 @@ public class GrassGenerator : MonoBehaviour
     private float patchSize;
     private ComputeBuffer grassPatchBuffer;
 
-
-    struct GrassData
-    {
-        //         public float height, density;
-        //         public Vector4 rootDir;
-        //         public GrassData(float height, float density, Vector4 rootDir) {
-        //             this.height = height;this.density = density;this.rootDir = rootDir;
-        //         }
-
-        public Vector3 Vertex1;
-        public Vector3 Vertex2;
-        public Vector3 Vertex3;
-        public Vector3 Vertex4;
-        public Vector3 Vertex5;
-        public Vector3 Vertex6;
-        public Vector3 Vertex7;
-        public Vector3 Vertex8;
-        public Vector3 Vertex9;
-        public Vector3 Vertex10;
-        public Vector3 Vertex11;
-        public Vector3 Vertex12;
-
-        //12
-        public GrassData(Vector3[] v)
-        {
-            Vertex1 = Vector3.zero;
-            Vertex2 = Vector3.zero;
-            Vertex3 = Vector3.zero;
-            Vertex4 = Vector3.zero;
-            Vertex5 = Vector3.zero;
-            Vertex6 = Vector3.zero;
-            Vertex7 = Vector3.zero;
-            Vertex8 = Vector3.zero;
-            Vertex9 = Vector3.zero;
-            Vertex10 = Vector3.zero;
-            Vertex11 = Vector3.zero;
-            Vertex12 = Vector3.zero;
-
-            for (int i =0; i < v.Length; i++)
-            {
-                switch(i)
-                {
-                    case 0: Vertex1 = v[i]; break;
-                    case 1: Vertex2 = v[i]; break;
-                    case 2: Vertex3 = v[i]; break;
-                    case 3: Vertex4 = v[i]; break;
-                    case 4: Vertex5 = v[i]; break;
-                    case 5: Vertex6 = v[i]; break;
-                    case 6: Vertex7 = v[i]; break;
-                    case 7: Vertex8 = v[i]; break;
-                    case 8: Vertex9 = v[i]; break;
-                    case 9: Vertex10 = v[i]; break;
-                    case 10: Vertex11 = v[i]; break;
-                    case 11: Vertex12 = v[i]; break;
-                    default: break;
-                }
-            }
-        }
-    }
-
-    /*public void GenShadowMap() {
-
-    }*/
-
     /// <summary>
     /// 预生成草地信息数组，传输给grassMaterial
     /// </summary>
     public void PregenerateGrassPatch() 
     {
-        GrassData[] grassData = new GrassData[pregenerateGrassAmount];
         int bladeVertexCount = (bladeSectionCount + 1) * 2;
+
+        Vector3[] grassData = new Vector3[pregenerateGrassAmount * bladeVertexCount];
 
         //随机生成草根位置、方向、高度、密度索引
         for (int i = 0; i < pregenerateGrassAmount; i++) 
@@ -106,11 +43,9 @@ public class GrassGenerator : MonoBehaviour
                 vertices[j] = new Vector3((j % 2 - 0.5f) * width,
                                         ((float)(j / 2)) / bladeSectionCount * height, 0);//0-63,0-11,0
 
+
+                grassData[i * bladeVertexCount + j] = vertices[j];
             }
-
-            GrassData data = new GrassData(vertices);
-
-            grassData[i] = data;
 
         }
         grassPatchBuffer = new ComputeBuffer(pregenerateGrassAmount, sizeof(float) * 3 *12);
