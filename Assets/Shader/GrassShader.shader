@@ -22,8 +22,13 @@
 
             sampler2D _MainTex;
 
+            struct GrassPositionData {
+                float3 position;
+                uint    instanceID;
+            };
+
         #if SHADER_TARGET >= 45
-            StructuredBuffer<float4> positionBuffer;
+            StructuredBuffer<GrassPositionData> positionBuffer;
         #endif
 
             struct v2f
@@ -51,20 +56,20 @@
             v2f vert (appdata_full v, uint instanceID : SV_InstanceID)
             {
             #if SHADER_TARGET >= 45
-                float4 data = positionBuffer[instanceID];
+                GrassPositionData data = positionBuffer[instanceID];
             #else
-                float4 data = 0;
+                GrassPositionData data = 0;
             #endif
 
                 //float rotation = data.w * data.w * _Time.x * 0.5f;
                 //rotate2D(data.xz, rotation);
 
-                int patchIndex = 2;
+                //int patchIndex = 2;
                 int vetextIndex = v.vertex.y;
-                float3 localPosition = _patchData[patchIndex].vertex[vetextIndex];
+                float3 localPosition = _patchData[data.instanceID].vertex[vetextIndex];
 
                 //float3 localPosition = v.vertex.xyz * data.w;
-                float3 worldPosition = data.xyz + localPosition;
+                float3 worldPosition = data.position + localPosition;
                 float3 worldNormal = v.normal;
 
 

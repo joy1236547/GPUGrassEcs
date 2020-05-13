@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Unity.Entities;
+using Unity.Collections;
 
 public class ExampleClass : MonoBehaviour
 {
@@ -52,20 +54,40 @@ public class ExampleClass : MonoBehaviour
             subMeshIndex = Mathf.Clamp(subMeshIndex, 0, instanceMesh.subMeshCount - 1);
 
         // Positions
-        if (positionBuffer != null)
-            positionBuffer.Release();
-        positionBuffer = new ComputeBuffer(instanceCount, 16);
-        Vector4[] positions = new Vector4[instanceCount];
-        for (int i = 0; i < instanceCount; i++)
-        {
-            float angle = Random.Range(0.0f, Mathf.PI * 2.0f);
-            float distance = Random.Range(1.0f, 2.0f);
-            float height = Random.Range(-2.0f, 2.0f);
-            float size = Random.Range(0.05f, 0.25f);
-            positions[i] = new Vector4(Mathf.Sin(angle) * distance, height, Mathf.Cos(angle) * distance, size);
-        }
-        positionBuffer.SetData(positions);
+//         if (positionBuffer != null)
+//             positionBuffer.Release();
+
+        /*
+                positionBuffer = new ComputeBuffer(instanceCount, 16);
+                Vector4[] positions = new Vector4[instanceCount];
+                for (int i = 0; i < instanceCount; i++)
+                {
+                    float angle = Random.Range(0.0f, Mathf.PI * 2.0f);
+                    float distance = Random.Range(1.0f, 2.0f);
+                    float height = Random.Range(-2.0f, 2.0f);
+                    float size = Random.Range(0.05f, 0.25f);
+                    positions[i] = new Vector4(Mathf.Sin(angle) * distance, height, Mathf.Cos(angle) * distance, size);
+                }
+        */
+        GrassSystem system = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<GrassSystem>();
+        //         NativeArray<GrassData> grassArray = system.GetGrassDataNativeArray();
+        //         if (grassArray == null || grassArray.Length == 0)
+        //             return;
+        // 
+        //         if (positionBuffer == null)
+        //         {
+        //             positionBuffer = new ComputeBuffer(grassArray.Length, 16);
+        //         }
+        //positionBuffer = new ComputeBuffer(grassArray.Length, 16);
+        //positionBuffer.SetData(grassArray);
+        positionBuffer = system.GetComputeBuffer();
+        if (positionBuffer == null)
+            return;
         instanceMaterial.SetBuffer("positionBuffer", positionBuffer);
+
+        instanceCount = positionBuffer.count;
+
+        //Debug.Log("instanceCount: " + instanceCount);
 
         // Indirect args
         if (instanceMesh != null)

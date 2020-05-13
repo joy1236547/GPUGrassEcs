@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/SampleScene.unity
+    guid: 99f0ef1953ecc2544a29721643c33c7d
+  - enabled: 1
+    path: Assets/Scenes/GrassSubScene.unity
+    guid: 1fb565526dd37bf429aae547e8bec11e
   m_configObjects: {}
